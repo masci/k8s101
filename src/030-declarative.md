@@ -3,7 +3,7 @@
 So far we have operated Kubernetes in an _imperative_ fashion, issuing "orders"
 through `kubectl` but this is not the way Kubernetes was designed to be used.
 
-From now on we’ll be using a _declarative_ approach, writing down in `YAML` syntax how we 
+From now on we’ll be using a _declarative_ approach, writing down in `YAML` syntax how we
 want the cluster to be _after_ we run `kubectl apply`.
 
 Such Yaml files are called **definitions**.
@@ -13,7 +13,7 @@ Such Yaml files are called **definitions**.
 > Change directory into the folder `definitions` before running these commands.
 
 Apply the definition named `two-containers-pod.yaml` and see how one of the containers
-in the pod will create an `index.html` file that will be then served by the second container 
+in the pod will create an `index.html` file that will be then served by the second container
 in the same pod:
 ```sh
 $ kubectl apply -f two-containers-pod.yaml

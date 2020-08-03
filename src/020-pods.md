@@ -1,22 +1,22 @@
 # Pods
 
-A **Pod** is the minimum deployable unit on kubernetes and consists of one or more 
-Docker containers. You can’t “run a container” in a Kubernetes cluster but you 
+A **Pod** is the minimum deployable unit on kubernetes and consists of one or more
+Docker containers. You can’t “run a container” in a Kubernetes cluster but you
 can schedule and “run a pod”.
 
 If we keep using the Operating System metaphor, a pod would be a process
-and its containers would be threads: each container has its own life 
-(for example it has separated cgroups) but at the same time it's strongly coupled 
-with the other containers in the pod by having shared namespaces, same hostname, 
+and its containers would be threads: each container has its own life
+(for example it has separated cgroups) but at the same time it's strongly coupled
+with the other containers in the pod by having shared namespaces, same hostname,
 same IP address and same open ports.
 
-It's important to note that a pod is atomic and it always runs on one node of the 
-Cluster. In other words, all the containers in a pod always lands in the same 
+It's important to note that a pod is atomic and it always runs on one node of the
+Cluster. In other words, all the containers in a pod always lands in the same
 Node of the Cluster.
 
 ## Exercise n.1: create a Pod
 
-First of all, create a pod called `nginx-pod` running a single container and 
+First of all, create a pod called `nginx-pod` running a single container and
 pulling the `nginx` image from Dockerhub:
 ```sh
 $ kubectl run nginx-pod --generator=run-pod/v1 --image=nginx
@@ -53,7 +53,7 @@ pod "nginx-pod" deleted
 
 ## Exercise n.2: interact with a Pod
 
-Let's create the same pod again but this time we expose its TCP port 
+Let's create the same pod again but this time we expose its TCP port
 number 80:
 
 ```sh
@@ -71,7 +71,7 @@ Forwarding from 127.0.0.1:8080 -> 80
 Forwarding from [::1]:8080 -> 80
 ```
 
-The tunnel will stay open until you hit CTRL+C, in the meantime you can open the 
+The tunnel will stay open until you hit CTRL+C, in the meantime you can open the
 browser at http://localhost:8080 and see the pod serving requests.
 
 Last but not least, we can also get logs for our pod by running:
