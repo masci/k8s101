@@ -31,7 +31,6 @@ In this unit we'll start a local Cluster and we'll explore its components with `
 ## Exercise n.1: start the Cluster
 
 If `kind` is correctly installed, all you have to do is:
-
 ```sh
 $ kind create cluster --name k8s101 --image kindest/node:v1.18.2
 Creating cluster "kind" ...
@@ -52,7 +51,6 @@ Have a nice day! 👋
 Notice we use a specific image (and not latest) so that we know it'll work with the pinned
 `kubectl` version. If you see no errors the default Cluster called `kind` should be ready 
 to use, and you can confirm it by running:
-
 ```sh
 $ kind get clusters
 kind
@@ -61,20 +59,17 @@ kind
 ## Exercise n.2: explore the Cluster
 
 To get informations about the Cluster, just run
-
 ```sh
 kubectl cluster-info
 ```
 
 To prove that everything is a RESTful resource in Kubernetes, you can increase
 `kubectl`'s log verbosity and see how it performs HTTP calls under the hood:
-
 ```sh
 kubectl cluster-info -v6
 ```
 
 We can query the status of few key components of the Cluster:
-
 ```sh
 kubectl get componentstatuses
 ```
@@ -87,7 +82,6 @@ kubectl get nodes
 The more detailed, more structured version of `kubectl get` is the command
 `describe`, that gives us a comprehensive view of the Objects we query, in this
 case the nodes of the Cluster:
-
 ```sh
 kubectl describe nodes
 ```
