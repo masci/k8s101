@@ -1,0 +1,12 @@
+site_name: k8s101
+repo_url: https://github.com/masci/k8s101
+docs_dir: src
+site_dir: docs
+nav:
+  - Home: index.md
+  - Course units:
+    - 010-first-contact.md
+    - 020-pods.md
+    - 030-declarative.md
+    - 040-labels.md
+    - 050-annotations.md
