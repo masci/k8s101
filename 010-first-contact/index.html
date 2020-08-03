@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>First contact - k8s101</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">k8s101</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Course units <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="./" class="dropdown-item active">First contact</a>
+</li>
+                                    
+<li>
+    <a href="../020-pods/" class="dropdown-item">Pods</a>
+</li>
+                                    
+<li>
+    <a href="../030-declarative/" class="dropdown-item">Going declarative</a>
+</li>
+                                    
+<li>
+    <a href="../040-labels/" class="dropdown-item">Labels</a>
+</li>
+                                    
+<li>
+    <a href="../050-annotations/" class="dropdown-item">Annotations</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href=".." class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../020-pods/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/masci/k8s101/edit/master/docs/010-first-contact.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#first-contact" class="nav-link">First contact</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#exercise-n1-start-the-cluster" class="nav-link">Exercise n.1: start the Cluster</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#exercise-n2-explore-the-cluster" class="nav-link">Exercise n.2: explore the Cluster</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="first-contact">First contact</h1>
+<p>Kubernetes is an orchestrator for deploying containers but you can think about it
+as an Operating System running your programs. While it's good to know how an
+Operating System works (and you should keep learning Kubernetes internals
+beyond this course), as long as you know how to install, upgrade and verify your
+programs are running fine, that'll be enough.</p>
+<p>You will always see Kubernetes as a single component but under the hood it runs on a
+<strong>Cluster</strong> of machines called <strong>Nodes</strong>. More nodes means more availability.
+Bigger nodes means more memory and CPU available to your programs.</p>
+<p>Every <strong>Object</strong> managed by Kubernetes is represented by a RESTful resource and we'll
+see how, at the end of the day, <code>kubectl</code> is just a smart HTTP client.</p>
+<p>For the scope of this course, we won't need a fully functional multi-node Kubernetes cluster.
+Instead, we'll be using Kind. <a href="https://kind.sigs.k8s.io/">KIND</a> stands for
+<em>Kubernetes IN Docker</em> and it's capable of managing local clusters of one node orchestrating a
+bunch of Docker containers. At this stage, feel free to ignore the internals and look at Kind
+for what it is, a tool to start/stop Kubernetes clusters.</p>
+<p>Another tool you must get familiar with is <code>kubectl</code>, the CLI tool you'll be using to <em>do stuff</em>
+on any Kubernetes cluster, whatever it's local or a production system. One caveat about <code>kubectl</code>,
+you need to double check the version you have in your system is compatible with the version of
+Kubernetes that runs in the cluster: client and server can be at most 1 minor version distant
+from each other. In our case, the versions are pinned so as long as you've followed the <a href="..">setup
+instructions</a> you should be good.</p>
+<p>In this unit we'll start a local Cluster and we'll explore its components with <code>kubectl</code>.</p>
+<h2 id="exercise-n1-start-the-cluster">Exercise n.1: start the Cluster</h2>
+<p>If <code>kind</code> is correctly installed, all you have to do is:</p>
+<pre><code class="sh">$ kind create cluster --name k8s101 --image kindest/node:v1.18.2
+Creating cluster &quot;kind&quot; ...
+ ✓ Ensuring node image (kindest/node:v1.18.2) 🖼
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+Set kubectl context to &quot;kind-kind&quot;
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+Have a nice day! 👋
+</code></pre>
+
+<p>Notice we use a specific image (and not latest) so that we know it'll work with the pinned
+<code>kubectl</code> version. If you see no errors the default Cluster called <code>kind</code> should be ready
+to use, and you can confirm it by running:</p>
+<pre><code class="sh">$ kind get clusters
+kind
+</code></pre>
+
+<h2 id="exercise-n2-explore-the-cluster">Exercise n.2: explore the Cluster</h2>
+<p>To get informations about the Cluster, just run</p>
+<pre><code class="sh">kubectl cluster-info
+</code></pre>
+
+<p>To prove that everything is a RESTful resource in Kubernetes, you can increase
+<code>kubectl</code>'s log verbosity and see how it performs HTTP calls under the hood:</p>
+<pre><code class="sh">kubectl cluster-info -v6
+</code></pre>
+
+<p>We can query the status of few key components of the Cluster:</p>
+<pre><code class="sh">kubectl get componentstatuses
+</code></pre>
+
+<p>And we can also get the list of all the nodes composing the Cluster:</p>
+<pre><code class="sh">kubectl get nodes
+</code></pre>
+
+<p>The more detailed, more structured version of <code>kubectl get</code> is the command
+<code>describe</code>, that gives us a comprehensive view of the Objects we query, in this
+case the nodes of the Cluster:</p>
+<pre><code class="sh">kubectl describe nodes
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
