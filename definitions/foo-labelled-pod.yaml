@@ -1,0 +1,16 @@
+apiVersion: v1
+# Which kind of object are we defining?
+kind: Pod
+
+metadata:
+  name: foo
+  # Labels are part of the Pod metadata
+  labels:
+    env: prod
+
+spec:
+  restartPolicy: Never
+  containers:
+  # A plain Nginx server running as a container
+  - name: nginx-container
+    image: nginx
