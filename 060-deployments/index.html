@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Pods - k8s101</title>
+        <title>Deployments - k8s101</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -45,7 +45,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active">Pods</a>
+    <a href="../020-pods/" class="dropdown-item">Pods</a>
 </li>
                                     
 <li>
@@ -61,7 +61,7 @@
 </li>
                                     
 <li>
-    <a href="../060-deployments/" class="dropdown-item">Deployments</a>
+    <a href="./" class="dropdown-item active">Deployments</a>
 </li>
                                 </ul>
                             </li>
@@ -74,17 +74,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../010-first-contact/" class="nav-link">
+                                <a rel="prev" href="../050-annotations/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../030-declarative/" class="nav-link">
+                                <a rel="next" class="nav-link disabled">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/masci/k8s101/edit/master/docs/020-pods.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/masci/k8s101/edit/master/docs/060-deployments.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -104,13 +104,9 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#pods" class="nav-link">Pods</a>
+            <li class="nav-item" data-level="1"><a href="#deployments" class="nav-link">Deployments</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#exercise-n1-create-a-pod" class="nav-link">Exercise n.1: create a Pod</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#exercise-n2-interact-with-a-pod" class="nav-link">Exercise n.2: interact with a Pod</a>
+            <li class="nav-item" data-level="2"><a href="#exercise-n1-manage-a-deployment" class="nav-link">Exercise n.1: manage a deployment</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -121,69 +117,67 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="pods">Pods</h1>
-<p>A <strong>Pod</strong> is the minimum deployable unit on kubernetes and consists of one or more
-Docker containers. You can’t “run a container” in a Kubernetes cluster but you
-can schedule and “run a pod”.</p>
-<p>If we keep using the Operating System metaphor, a pod would be a process
-and its containers would be threads: each container has its own life
-(for example it has separated cgroups) but at the same time it's strongly coupled
-with the other containers in the pod by having shared namespaces, same hostname,
-same IP address and same open ports.</p>
-<p>It's important to note that a pod is atomic and it always runs on one node of the
-Cluster. In other words, all the containers in a pod always lands in the same
-Node of the Cluster.</p>
-<h2 id="exercise-n1-create-a-pod">Exercise n.1: create a Pod</h2>
-<p>First of all, create a pod called <code>nginx-pod</code> running a single container and
-pulling the <code>nginx</code> image from Dockerhub:</p>
-<pre><code class="sh">$ kubectl run nginx-pod --generator=run-pod/v1 --image=nginx
-Flag --generator has been deprecated, has no effect and will be removed in the future.
-pod/nginx-pod created
-</code></pre>
-
+<h1 id="deployments">Deployments</h1>
+<p>So far we scheduled our pods manually but this way we don't leverage any of the
+cool features of Kubernetes, like scaling up and down automatically or self-healing
+the system when needed.</p>
+<p>A <strong>Deployment</strong> is an object that logically groups pods together according to our
+specifications. An example of specification is the number of desired pods that must
+run at any given time no matter what. If a pod dies, we want Kubernetes to bring another
+one up to replace it; if pods are more than we asked for, we want Kubernetes to
+kill as many as needed to match our request.</p>
+<h2 id="exercise-n1-manage-a-deployment">Exercise n.1: manage a deployment</h2>
 <blockquote>
-<p>Please ignore the deprecation warning for now, this command is only meaningful in the
-context of this course and you wouldn't use it in a real world scenario.</p>
+<p>Change directory into the folder <code>definitions</code> before running these commands.</p>
 </blockquote>
-<p>Now to get the list of running pods run:</p>
-<pre><code class="sh">$ kubectl get pods
-NAME        READY   STATUS    RESTARTS   AGE
-nginx-pod   1/1     Running   0          104s
+<p>Create a <strong>Deployment</strong> called <code>nginx-prod</code>:</p>
+<pre><code class="sh">$ kubectl apply -f nginx-prod.yaml
+deployment.apps/nginx-prod created
 </code></pre>
 
-<p>As we mentioned in the previous unit, we can get a lot more info about an Object
-using <code>describe</code>, let's do it with our pod:</p>
-<pre><code class="sh">$ kubectl describe pod nginx-pod
-Name:         nginx-pod
-Namespace:    default
-...
+<p>Now let's ask <code>kubectl</code> to list all the objects present in the cluster to see
+what happened:</p>
+<pre><code class="sh">$ kubectl get all
+NAME                             READY   STATUS    RESTARTS   AGE
+pod/nginx-prod-d6fd669f4-8tng2   1/1     Running   0          102s
+pod/nginx-prod-d6fd669f4-9x57t   1/1     Running   0          102s
+pod/nginx-prod-d6fd669f4-fpxqw   1/1     Running   0          102s
+
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-prod   3/3     3            3           102s
+
+NAME                                   DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-prod-d6fd669f4   3         3         3       102s
 </code></pre>
 
-<p>Finally, we can delete the pod:</p>
-<pre><code class="sh">$ kubectl delete pods nginx-pod
-pod &quot;nginx-pod&quot; deleted
+<p>As you can see there are now 3 pods, 1 deployment and 1 object we haven't seen
+yet, a <strong>Replicaset</strong>. A replicaset has the only responsibility to keep a certain
+number of pods running at any time; in this case, since our deployment specs
+defined 3 replicas for our pod, while creating the deployment Kubernetes
+also attached a replicaset to it.</p>
+<p>If you run a <code>kubectl describe</code> on the replicaset, you'll notice that it is under the
+control of our deployment:</p>
+<pre><code class="sh">$ kubectl describe replicaset &lt;the name of the replicaset&gt;
+Name:           nginx-prod-d6fd669f4
+Namespace:      default
+&lt;snip&gt;
+Controlled By:  Deployment/nginx-prod
+&lt;snip&gt;
 </code></pre>
 
-<h2 id="exercise-n2-interact-with-a-pod">Exercise n.2: interact with a Pod</h2>
-<p>Let's create the same pod again but this time we expose its TCP port
-number 80:</p>
-<pre><code class="sh">kubectl run nginx --generator=run-pod/v1 --image=nginx --port 80
+<p>Now let's see the replicaset in action: we're going to kill one pod and see if
+another one starts to take its place.</p>
+<pre><code class="sh">$ kubectl delete pod &lt;the name of the pod&gt;
+pod &quot;the name of the pod&quot; deleted
 </code></pre>
 
-<p>The port is only exposed within the <strong>Cluster</strong> but there's a way to easily
-open a connection tunnel to our local host at the port 8080 by running:</p>
-<pre><code class="sh">$ kubectl port-forward nginx-pod 8080:80
-Forwarding from 127.0.0.1:8080 -&gt; 80
-Forwarding from [::1]:8080 -&gt; 80kubectl port-forward nginx-pod 8080:80
-Forwarding from 127.0.0.1:8080 -&gt; 80
-Forwarding from [::1]:8080 -&gt; 80
+<p>Respawning a new pod is almost instantaneous, so by the time you run this
+command again:</p>
+<pre><code class="sh">kubectl get pods
 </code></pre>
 
-<p>The tunnel will stay open until you hit CTRL+C, in the meantime you can open the
-browser at http://localhost:8080 and see the pod serving requests.</p>
-<p>Last but not least, we can also get logs for our pod by running:</p>
-<pre><code class="sh">kubectl logs nginx
-</code></pre></div>
+<p>you'll see that a new pod with a different name has started, bringing back
+the pod count to 3.</p></div>
             </div>
         </div>
 
