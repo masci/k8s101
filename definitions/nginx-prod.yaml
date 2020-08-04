@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: nginx-prod
+
+spec:
+  # how many pod replicas do you want to run?
+  replicas: 3
+  # how can I find this pod so that I can look after it?
+  selector:
+    matchLabels:
+      app: nginx
+      env: prod
+  # If I need to create a new pod, which definition
+  # should I use?
+  template:
+    metadata:
+      labels:
+        app: nginx
+        env: prod
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+        ports:
+        - containerPort: 80

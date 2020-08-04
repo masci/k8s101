@@ -10,3 +10,4 @@ nav:
     - 030-declarative.md
     - 040-labels.md
     - 050-annotations.md
+    - 060-deployments.md
