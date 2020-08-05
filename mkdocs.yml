@@ -14,4 +14,4 @@ nav:
     - 070-services.md
     - 080-ingress.md
     - 090-configmaps.md
-
+    - 100-secrets.md

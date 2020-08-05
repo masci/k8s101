@@ -30,4 +30,4 @@ order to have a better control over installes versions:
 
 ## kubectl create course
 
-You can now move to [the first batch of exercises](10-explore.md) to start the course.
+You can now move to [the first batch of exercises](010-first-contact.md) to start the course.
