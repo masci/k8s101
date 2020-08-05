@@ -30,9 +30,10 @@ In this unit we'll start a local Cluster and we'll explore its components with `
 
 ## Exercise n.1: start the Cluster
 
-If `kind` is correctly installed, all you have to do is:
+If `kind` is correctly installed, all you have to do is running this command from the root of
+the repo:
 ```sh
-$ kind create cluster --name k8s101 --image kindest/node:v1.18.2
+$ kind create cluster --name k8s101 --image kindest/node:v1.18.2 --config kind-config.yaml
 Creating cluster "kind" ...
  ✓ Ensuring node image (kindest/node:v1.18.2) 🖼
  ✓ Preparing nodes 📦
