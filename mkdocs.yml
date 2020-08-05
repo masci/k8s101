@@ -15,3 +15,4 @@ nav:
     - 080-ingress.md
     - 090-configmaps.md
     - 100-secrets.md
+    - 110-helm.md
