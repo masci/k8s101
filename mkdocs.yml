@@ -13,3 +13,5 @@ nav:
     - 060-deployments.md
     - 070-services.md
     - 080-ingress.md
+    - 090-configmaps.md
+

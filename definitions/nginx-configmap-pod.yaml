@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: nginx-configmap
+
+spec:
+  volumes:
+    - name: configmap-volume
+      # Populate the volume with config map data
+      configMap:
+        # `name` here must match the name
+        # specified in the ConfigMap's YAML definition
+        name: my-config
+
+  containers:
+    - name: nginx-container
+      image: nginx
+      ports:
+      - containerPort: 80
+      volumeMounts:
+        # `name` here must match the name
+        # from the volumes section of this pod
+        - name: configmap-volume
+          mountPath: /etc/config
