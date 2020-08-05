@@ -12,3 +12,4 @@ nav:
     - 050-annotations.md
     - 060-deployments.md
     - 070-services.md
+    - 080-ingress.md

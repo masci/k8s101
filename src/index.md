@@ -26,7 +26,7 @@ order to have a better control over installes versions:
     * `asdf plugin-add kubectl`
     * `asdf plugin-add helm`
 * Finally, install versioned dependencies with `asdf install`
-* Git clone https://github.com/masci/k8s101/ and perform the exercises from the root of the repo
+* Git clone [https://github.com/masci/k8s101/](https://github.com/masci/k8s101/) and perform the exercises from the root of the repo
 
 ## kubectl create course
 
