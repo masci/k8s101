@@ -2,6 +2,7 @@ site_name: k8s101
 repo_url: https://github.com/masci/k8s101
 docs_dir: src
 site_dir: docs
+edit_uri: tree/master/src
 nav:
   - Home: index.md
   - Course units:
