@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Helm - k8s101</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">k8s101</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Course units <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../010-first-contact/" class="dropdown-item">First contact</a>
+</li>
+                                    
+<li>
+    <a href="../020-pods/" class="dropdown-item">Pods</a>
+</li>
+                                    
+<li>
+    <a href="../030-declarative/" class="dropdown-item">Going declarative</a>
+</li>
+                                    
+<li>
+    <a href="../040-labels/" class="dropdown-item">Labels</a>
+</li>
+                                    
+<li>
+    <a href="../050-annotations/" class="dropdown-item">Annotations</a>
+</li>
+                                    
+<li>
+    <a href="../060-deployments/" class="dropdown-item">Deployments</a>
+</li>
+                                    
+<li>
+    <a href="../070-services/" class="dropdown-item">Services</a>
+</li>
+                                    
+<li>
+    <a href="../080-ingress/" class="dropdown-item">Ingress</a>
+</li>
+                                    
+<li>
+    <a href="../090-configmaps/" class="dropdown-item">Config Maps</a>
+</li>
+                                    
+<li>
+    <a href="../100-secrets/" class="dropdown-item">Secrets</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Helm</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../100-secrets/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/masci/k8s101/edit/master/docs/110-helm.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#helm" class="nav-link">Helm</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#helm_1" class="nav-link">Helm</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#the-helm-hub" class="nav-link">The Helm Hub</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#exercise-n1-install-a-chart" class="nav-link">Exercise n.1: install a Chart</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#exercise-n2-update-a-chart-release" class="nav-link">Exercise n.2: update a Chart Release</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#exercise-n3-rollback-a-chart" class="nav-link">Exercise n.3: rollback a Chart</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="helm">Helm</h1>
+<h2 id="helm_1">Helm</h2>
+<p>Helm is a command line application that manages <strong>Charts</strong>. A Chart is a
+zip archive containing the definitions for an arbitrary number of Kubernetes
+resources that an applications might require to work properly.</p>
+<p>Like other software packages, Charts can be installed, updated or uninstalled
+from a Kubernetes cluster, provided you have the right set of permissions. There
+are Charts to easily deploy many well known softwares on Kubernetes: dbms like MySQL
+or Postgres, full-fledged web applications like Wordpress or Joomla, network servers
+like Traefik or Ambassador, they can all be installed on a Kubernetes cluster using
+Helm; and if you have a custom application or service you can still leverage Helm by
+writing your own Charts.</p>
+<h2 id="the-helm-hub">The Helm Hub</h2>
+<p>Charts are stored in a (usually public) file storage with a well known layout
+called <strong>Helm repository</strong>. Originally, Helm contributors maintained a central repo
+of "official" charts but as it didn't scale, charts are now stored across many different
+repositories.</p>
+<p>To overcome this problem, Helm folks created the <a href="https://hub.helm.sh/">Chart Hub</a>, a
+searchable archive listing all the available Charts and the repositories where you can
+find them.</p>
+<h2 id="exercise-n1-install-a-chart">Exercise n.1: install a Chart</h2>
+<p>Let's search for a chart to install a Mysql database server. We want to list the available
+charts along with the repositories we can use to fetch them:</p>
+<pre><code class="sh">$ helm search hub mysql
+URL                                                 CHART VERSION   APP VERSION DESCRIPTION
+https://hub.helm.sh/charts/appscode/stash-mysql     8.0.14          8.0.14      stash-mysql - MySQL database backup and restore...
+https://hub.helm.sh/charts/banzaicloud-stable/tidb  0.0.2                       A TiDB Helm chart for Kubernetes
+https://hub.helm.sh/charts/banzaicloud-stable/p...  0.2.4           v0.11.0     A Helm chart for prometheus mysql exporter with...
+https://hub.helm.sh/charts/banzaicloud-stable/m...  0.1.0           0.2.0       A Helm chart for deploying the Oracle MySQL Ope...
+https://hub.helm.sh/charts/bitnami/mariadb          7.7.1           10.3.23     Fast, reliable, scalable, and easy to use open-...
+https://hub.helm.sh/charts/bitnami/phpmyadmin       6.3.2           5.0.2       phpMyAdmin is an mysql administration frontend
+https://hub.helm.sh/charts/bitnami/mysql            6.14.7          8.0.21      Chart to create a Highly available MySQL cluster
+&lt;snip&gt;
+</code></pre>
+
+<p>As you can see, every Chart has a <code>CHART VERSION</code> and an <code>APP VERSION</code>: the first
+one refers to the version of the Chart itself while the latter refers to
+the application that will be installed. This versioning schema allows to distribute
+different versions of an application with the same Chart but different chart maintainers
+might use different conventions, so don't be puzzled if the version numbers are not
+familiar and browse the chart's docs to get more details.</p>
+<p>The first column contains the URL of the docs for the chart: for example, if we open
+<code>https://hub.helm.sh/charts/bitnami/mariadb</code> we see under the <code>Helm CLI</code> install section
+that the next step would be adding a repository to our local list:</p>
+<pre><code class="sh">$ helm repo add bitnami https://charts.bitnami.com/bitnami
+&quot;bitnami&quot; has been added to your repositories
+</code></pre>
+
+<p>Before proceeding with the installation we need to introduce some Helm terminology
+to avoid confusion. When we install a <strong>Chart</strong> we create a <strong>Release</strong> of that
+Chart, and every release has a <strong>Release Name</strong> that mitght or might not be
+relevant to the application that's being deployed; Helm encourages to use a
+so-called "pet-name" to name releases. Every <strong>Release</strong> has a set of <strong>Values</strong>
+that can be passed by the user to customize the installation.</p>
+<p>Let's install MariaDB <code>10.3</code>, we'll call this <strong>Release</strong> <code>rainbow-dash</code> and we
+want to pass some <strong>Values</strong>, namely a new database, user and password we want
+to create:</p>
+<pre><code class="sh">$ helm install rainbow-dash --set db.name=myapp,db.user=dbuser,db.password=s3cr3t bitnami/mariadb
+NAME: rainbow-dash
+LAST DEPLOYED: Wed Aug  5 17:24:50 2020
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+Please be patient while the chart is being deployed
+&lt;snip&gt;
+</code></pre>
+
+<p>Helm adds labels to the objects it manages so we can list which pods are running after installing
+the chart with:</p>
+<pre><code class="sh">$ kubectl get pods -l release=rainbow-dash
+NAME                            READY   STATUS    RESTARTS   AGE
+rainbow-dash-mariadb-master-0   1/1     Running   0          119s
+rainbow-dash-mariadb-slave-0    1/1     Running   0          119s
+</code></pre>
+
+<blockquote>
+<p>To have an idea of which <strong>Values</strong> a Chart accepts, refer to its documentation in the
+Helm Hub, for MariaDB: https://hub.helm.sh/charts/bitnami/mariadb</p>
+</blockquote>
+<h2 id="exercise-n2-update-a-chart-release">Exercise n.2: update a Chart Release</h2>
+<p>Releases can be updated at any time, for example if you need to pass different
+<strong>Values</strong> or if you want to deploy a more recent version of an application. You
+can look at all the releases currently installed in your cluster by running:</p>
+<pre><code class="sh">$ helm ls
+NAME            NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
+rainbow-dash    default     1           2020-08-05 17:24:50.778728 +0200 CEST   deployed    mariadb-7.7.2   10.3.23
+</code></pre>
+
+<p>Every <strong>Release</strong> has a <strong>Revision</strong>, which is fundamentally a counter that's
+incremented every time a <strong>Release</strong> is updated. Let's try to change the password
+for the default database user:</p>
+<pre><code class="sh">$ helm upgrade rainbow-dash --reuse-values --set db.password=r0tat3d bitnami/mariadb
+Release &quot;rainbow-dash&quot; has been upgraded. Happy Helming!
+NAME: rainbow-dash
+&lt;snip&gt;
+</code></pre>
+
+<p>If you run again <code>helm ls</code>, you'll see how the <strong>Revision</strong> was bumped:</p>
+<pre><code class="sh">$ helm ls
+NAME            NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
+rainbow-dash    default     2           2020-08-05 17:31:01.911759 +0200 CEST   deployed    mariadb-7.7.2   10.3.23
+</code></pre>
+
+<p>For every <strong>Release</strong> deployed on a cluster, you can list the <strong>Values</strong> currently
+in use with the following command:</p>
+<pre><code class="sh">$ helm get values rainbow-dash
+USER-SUPPLIED VALUES:
+db:
+  name: myapp
+  password: r0tat3d
+  user: dbuser
+</code></pre>
+
+<p>Note how <code>--reuse-values</code> in the <code>helm upgrade</code> command from above tells Helm to
+merge all the <strong>Values</strong> currently in use with the ones overridden with <code>--set</code>;
+in this case, the resulting <strong>Values</strong> are the ones from <strong>Revision</strong> n.1 with the
+exception of <code>db.password</code> that was explicitly set.</p>
+<h2 id="exercise-n3-rollback-a-chart">Exercise n.3: rollback a Chart</h2>
+<p>If an application installed with Helm is misbehaving, you can roll it back to a
+previous <strong>Revision</strong> with the command:</p>
+<pre><code class="sh">$ helm rollback rainbow-dash
+Rollback was a success! Happy Helming!
+</code></pre>
+
+<p>To see the history of a Helm release, you can do (note the rollback was registered):</p>
+<pre><code class="sh">$ helm history rainbow-dash
+REVISION    UPDATED                     STATUS      CHART           APP VERSION DESCRIPTION
+1           Wed Aug  5 17:24:50 2020    superseded  mariadb-7.7.2   10.3.23     Install complete
+2           Wed Aug  5 17:31:01 2020    superseded  mariadb-7.7.2   10.3.23     Upgrade complete
+3           Wed Aug  5 17:32:33 2020    deployed    mariadb-7.7.2   10.3.23     Rollback to 1
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

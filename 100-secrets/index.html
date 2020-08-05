@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Going declarative - k8s101</title>
+        <title>Secrets - k8s101</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -49,7 +49,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active">Going declarative</a>
+    <a href="../030-declarative/" class="dropdown-item">Going declarative</a>
 </li>
                                     
 <li>
@@ -77,7 +77,7 @@
 </li>
                                     
 <li>
-    <a href="../100-secrets/" class="dropdown-item">Secrets</a>
+    <a href="./" class="dropdown-item active">Secrets</a>
 </li>
                                     
 <li>
@@ -94,17 +94,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../020-pods/" class="nav-link">
+                                <a rel="prev" href="../090-configmaps/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../040-labels/" class="nav-link">
+                                <a rel="next" href="../110-helm/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/masci/k8s101/edit/master/docs/030-declarative.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/masci/k8s101/edit/master/docs/100-secrets.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -124,9 +124,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#going-declarative" class="nav-link">Going declarative</a>
+            <li class="nav-item" data-level="1"><a href="#secrets" class="nav-link">Secrets</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#exercise-n1-get-familiar-with-kubectl-apply" class="nav-link">Exercise n.1: get familiar with kubectl apply</a>
+            <li class="nav-item" data-level="2"><a href="#exercise-n1-create-a-secret-with-kubectl" class="nav-link">Exercise n.1: create a secret with kubectl</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#exercise-n2-create-a-secret-manually" class="nav-link">Exercise n.2: create a secret manually</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -137,30 +141,63 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="going-declarative">Going declarative</h1>
-<p>So far we have operated Kubernetes in an <em>imperative</em> fashion, issuing "orders"
-through <code>kubectl</code> but this is not the way Kubernetes was designed to be used.</p>
-<p>From now on we’ll be using a <em>declarative</em> approach, writing down in <code>YAML</code> syntax how we
-want the cluster to be <em>after</em> we run <code>kubectl apply</code>.</p>
-<p>Such Yaml files are called <strong>definitions</strong>.</p>
-<h2 id="exercise-n1-get-familiar-with-kubectl-apply">Exercise n.1: get familiar with kubectl apply</h2>
-<blockquote>
-<p>Change directory into the folder <code>definitions</code> before running these commands.</p>
-</blockquote>
-<p>Apply the definition named <code>two-containers-pod.yaml</code> and see how one of the containers
-in the pod will create an <code>index.html</code> file that will be then served by the second container
-in the same pod:</p>
-<pre><code class="sh">$ kubectl apply -f two-containers-pod.yaml
-pod/two-containers-pod created
+<h1 id="secrets">Secrets</h1>
+<p><strong>Secret</strong> resources are very similar to <strong>ConfigMap</strong> but they were introduced
+later, with the goal to store sensitive informations and you should consider this
+feature still a work in progress, at least in vanilla instance of Kubernetes.
+In fact at this time Kubernetes secrets are stored in plain-text, base64 encoded
+format.</p>
+<p>It's important to stress the fact that <strong>Encoding is not Encryption</strong>: despite the
+name and the original design, Kubernetes' secrets can't be trusted to store
+sensitive informations without providing some kind of encryption on top of them.
+Some cloud providers encrypt Kubernetes secrets at the application layer, see
+for example <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets">GKE</a>.</p>
+<h2 id="exercise-n1-create-a-secret-with-kubectl">Exercise n.1: create a secret with kubectl</h2>
+<p>Same as config maps, there are several options to create a secret, for brevity
+we'll pass our secret strings to <code>kubectl</code>:</p>
+<pre><code class="sh">$ kubectl create secret generic my-secret --from-literal=username=superuser --from-literal=password=topsecret
+secret/my-secret created
 </code></pre>
 
-<p>Then let's see with a browser what the Nginx in that pod is serving:</p>
-<pre><code>kubectl port-forward two-containers-pod 8080:80
+<p>You can see what's in your secret by running:</p>
+<pre><code class="sh">$ kubectl describe secret my-secret
+Name:         my-secret
+&lt;snuip&gt;
+Data
+====
+username:  9 bytes
+password:  9 bytes
 </code></pre>
 
-<p>Open the browser at http://localhost:8080.</p>
-<p>Finally, delete all the pods running in the Cluster:</p>
-<pre><code class="sh">kubectl delete pods --all
+<p>As you can see, differently from a config map we can't see the plain text version of our data
+because <code>kubectl</code> encoded the literals in base64 on the fly.</p>
+<h2 id="exercise-n2-create-a-secret-manually">Exercise n.2: create a secret manually</h2>
+<p>If we want to manually create a secret, we have to handle encoding ourselves:</p>
+<pre><code class="sh">$ echo -n 'admin' | base64
+YWRtaW4=
+</code></pre>
+
+<p>Then we can use the encoded value (e.g.) in a yaml definition like this:</p>
+<pre><code>apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  username: YWRtaW4=
+</code></pre>
+
+<p>And create the object:</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  username: YWRtaW4=
+EOF
+secret/mysecret created
 </code></pre></div>
             </div>
         </div>

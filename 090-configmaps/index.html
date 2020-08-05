@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Going declarative - k8s101</title>
+        <title>Config Maps - k8s101</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -49,7 +49,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active">Going declarative</a>
+    <a href="../030-declarative/" class="dropdown-item">Going declarative</a>
 </li>
                                     
 <li>
@@ -73,7 +73,7 @@
 </li>
                                     
 <li>
-    <a href="../090-configmaps/" class="dropdown-item">Config Maps</a>
+    <a href="./" class="dropdown-item active">Config Maps</a>
 </li>
                                     
 <li>
@@ -94,17 +94,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../020-pods/" class="nav-link">
+                                <a rel="prev" href="../080-ingress/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../040-labels/" class="nav-link">
+                                <a rel="next" href="../100-secrets/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/masci/k8s101/edit/master/docs/030-declarative.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/masci/k8s101/edit/master/docs/090-configmaps.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -124,9 +124,9 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#going-declarative" class="nav-link">Going declarative</a>
+            <li class="nav-item" data-level="1"><a href="#config-maps" class="nav-link">Config Maps</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#exercise-n1-get-familiar-with-kubectl-apply" class="nav-link">Exercise n.1: get familiar with kubectl apply</a>
+            <li class="nav-item" data-level="2"><a href="#exercise-n1-config-a-pod" class="nav-link">Exercise n.1: config a Pod</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -137,30 +137,48 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="going-declarative">Going declarative</h1>
-<p>So far we have operated Kubernetes in an <em>imperative</em> fashion, issuing "orders"
-through <code>kubectl</code> but this is not the way Kubernetes was designed to be used.</p>
-<p>From now on we’ll be using a <em>declarative</em> approach, writing down in <code>YAML</code> syntax how we
-want the cluster to be <em>after</em> we run <code>kubectl apply</code>.</p>
-<p>Such Yaml files are called <strong>definitions</strong>.</p>
-<h2 id="exercise-n1-get-familiar-with-kubectl-apply">Exercise n.1: get familiar with kubectl apply</h2>
+<h1 id="config-maps">Config Maps</h1>
+<p>Config maps are a feature of Kubernetes we can use to store configuration
+parameters that pods running on the cluster can access at runtime.  A config
+map can be filled with data coming from different sources:</p>
+<ul>
+<li>A Yaml dictionary in a <code>.yaml</code> file</li>
+<li>A file on disk containing one key per line with the format: <code>my.settings.key=myval</code></li>
+<li>A directory containing configuration files in the same format as previous bullet</li>
+<li>From the command line as args for <code>kubectl</code></li>
+</ul>
+<p>Once a <strong>ConfigMap</strong> resource containing our data is created, a pod can use it in two
+different ways:</p>
+<ol>
+<li>By mounting a volume (a file will be created in the pod’s volume for each config key)</li>
+<li>By injecting environment variables in the pod, each value will be stored in an env var
+   named after the key</li>
+</ol>
+<h2 id="exercise-n1-config-a-pod">Exercise n.1: config a Pod</h2>
 <blockquote>
-<p>Change directory into the folder <code>definitions</code> before running these commands.</p>
+<p>Change directory into the folder <code>definitions</code> before running the commands.</p>
 </blockquote>
-<p>Apply the definition named <code>two-containers-pod.yaml</code> and see how one of the containers
-in the pod will create an <code>index.html</code> file that will be then served by the second container
-in the same pod:</p>
-<pre><code class="sh">$ kubectl apply -f two-containers-pod.yaml
-pod/two-containers-pod created
+<p>First of all, we need to create the <strong>ConfigMap</strong> resource:</p>
+<pre><code class="sh">kubectl apply -f myconfig.yaml
 </code></pre>
 
-<p>Then let's see with a browser what the Nginx in that pod is serving:</p>
-<pre><code>kubectl port-forward two-containers-pod 8080:80
+<p>You can inspect the contents of the config map by running:</p>
+<pre><code class="sh">kubectl describe configmap my-config
 </code></pre>
 
-<p>Open the browser at http://localhost:8080.</p>
-<p>Finally, delete all the pods running in the Cluster:</p>
-<pre><code class="sh">kubectl delete pods --all
+<p>We can now use it from a pod by mounting a volume (see the definition file):</p>
+<pre><code class="sh">kubectl apply -f nginx-configmap-pod.yaml
+</code></pre>
+
+<p>At this point, we can verify the pod can actually access the configuration
+values:</p>
+<pre><code class="sh">$ kubectl exec -it nginx-configmap -- bash
+$$ ls /etc/config
+password  username
+$$ cat /etc/config/username ; echo
+root
+$$ cat /etc/config/password ; echo
+mypass
 </code></pre></div>
             </div>
         </div>

@@ -63,6 +63,26 @@
 <li>
     <a href="../060-deployments/" class="dropdown-item">Deployments</a>
 </li>
+                                    
+<li>
+    <a href="../070-services/" class="dropdown-item">Services</a>
+</li>
+                                    
+<li>
+    <a href="../080-ingress/" class="dropdown-item">Ingress</a>
+</li>
+                                    
+<li>
+    <a href="../090-configmaps/" class="dropdown-item">Config Maps</a>
+</li>
+                                    
+<li>
+    <a href="../100-secrets/" class="dropdown-item">Secrets</a>
+</li>
+                                    
+<li>
+    <a href="../110-helm/" class="dropdown-item">Helm</a>
+</li>
                                 </ul>
                             </li>
                         </ul>
@@ -145,8 +165,9 @@ from each other. In our case, the versions are pinned so as long as you've follo
 instructions</a> you should be good.</p>
 <p>In this unit we'll start a local Cluster and we'll explore its components with <code>kubectl</code>.</p>
 <h2 id="exercise-n1-start-the-cluster">Exercise n.1: start the Cluster</h2>
-<p>If <code>kind</code> is correctly installed, all you have to do is:</p>
-<pre><code class="sh">$ kind create cluster --name k8s101 --image kindest/node:v1.18.2
+<p>If <code>kind</code> is correctly installed, all you have to do is running this command from the root of
+the repo:</p>
+<pre><code class="sh">$ kind create cluster --name k8s101 --image kindest/node:v1.18.2 --config kind-config.yaml
 Creating cluster &quot;kind&quot; ...
  ✓ Ensuring node image (kindest/node:v1.18.2) 🖼
  ✓ Preparing nodes 📦

@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Going declarative - k8s101</title>
+        <title>Services - k8s101</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -49,7 +49,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active">Going declarative</a>
+    <a href="../030-declarative/" class="dropdown-item">Going declarative</a>
 </li>
                                     
 <li>
@@ -65,7 +65,7 @@
 </li>
                                     
 <li>
-    <a href="../070-services/" class="dropdown-item">Services</a>
+    <a href="./" class="dropdown-item active">Services</a>
 </li>
                                     
 <li>
@@ -94,17 +94,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../020-pods/" class="nav-link">
+                                <a rel="prev" href="../060-deployments/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../040-labels/" class="nav-link">
+                                <a rel="next" href="../080-ingress/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/masci/k8s101/edit/master/docs/030-declarative.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/masci/k8s101/edit/master/docs/070-services.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -124,9 +124,9 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#going-declarative" class="nav-link">Going declarative</a>
+            <li class="nav-item" data-level="1"><a href="#services" class="nav-link">Services</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#exercise-n1-get-familiar-with-kubectl-apply" class="nav-link">Exercise n.1: get familiar with kubectl apply</a>
+            <li class="nav-item" data-level="2"><a href="#exercise-n1-expose-a-deployment" class="nav-link">Exercise n.1: expose a deployment</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -137,31 +137,50 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="going-declarative">Going declarative</h1>
-<p>So far we have operated Kubernetes in an <em>imperative</em> fashion, issuing "orders"
-through <code>kubectl</code> but this is not the way Kubernetes was designed to be used.</p>
-<p>From now on we’ll be using a <em>declarative</em> approach, writing down in <code>YAML</code> syntax how we
-want the cluster to be <em>after</em> we run <code>kubectl apply</code>.</p>
-<p>Such Yaml files are called <strong>definitions</strong>.</p>
-<h2 id="exercise-n1-get-familiar-with-kubectl-apply">Exercise n.1: get familiar with kubectl apply</h2>
-<blockquote>
-<p>Change directory into the folder <code>definitions</code> before running these commands.</p>
-</blockquote>
-<p>Apply the definition named <code>two-containers-pod.yaml</code> and see how one of the containers
-in the pod will create an <code>index.html</code> file that will be then served by the second container
-in the same pod:</p>
-<pre><code class="sh">$ kubectl apply -f two-containers-pod.yaml
-pod/two-containers-pod created
+<h1 id="services">Services</h1>
+<p>A <strong>Service</strong> is an object providing network access to a deployment, the
+most common use case being exposing it to the Internet. <em>Expose</em> is also the
+jargon used in <code>kubectl</code>, where you use a command called <code>expose</code> to create
+a service.</p>
+<h2 id="exercise-n1-expose-a-deployment">Exercise n.1: expose a deployment</h2>
+<p>Assuming the <code>nginx-prod</code> deployment from the previous unit is still running,
+we create a new service by exposing it:</p>
+<pre><code class="sh">$ kubectl expose deployment nginx-prod
+service/nginx-prod exposed
 </code></pre>
 
-<p>Then let's see with a browser what the Nginx in that pod is serving:</p>
-<pre><code>kubectl port-forward two-containers-pod 8080:80
+<p>As anticipated, under the hood Kubernetes created the corresponding service object:</p>
+<pre><code class="sh">$ kubectl get services
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+nginx-prod   ClusterIP   10.104.193.191   &lt;none&gt;        80/TCP    5s
 </code></pre>
 
-<p>Open the browser at http://localhost:8080.</p>
-<p>Finally, delete all the pods running in the Cluster:</p>
-<pre><code class="sh">kubectl delete pods --all
-</code></pre></div>
+<p>Note the newly created service has <code>ClusterIP</code> as its <code>TYPE</code> and <code>&lt;none&gt;</code> as the
+<code>EXTERNAL-IP</code> value, meaning the corresponding deployment is only exposed internally
+within the cluster and won't be reachable from the Internet. A service can be created
+in several different flavors, called <code>types</code>. The default type is <code>ClusterIP</code> and
+it doesn't provide any routing facility to let the service be accessed from the outside,
+reason why you see the external IP is <code>&lt;none&gt;</code>.</p>
+<p>Let's delete this service and try exposing the deployment with a different service type,
+<code>LoadBalancer</code>:</p>
+<pre><code class="sh">$ kubectl delete service nginx-prod
+service &quot;nginx-prod&quot; deleted
+$ kubectl expose deployment nginx-prod --type=LoadBalancer
+service/nginx-prod exposed
+</code></pre>
+
+<p>This time, something seems to happen as you can see from:</p>
+<pre><code class="sh">kubectl get services
+</code></pre>
+
+<p>EXTERNAL-IP is now <code>&lt;pending&gt;</code> and if your cluster is configured to do so,
+eventually you'll find a real public IP address listed there and you'll be able
+to access the service from a host outside the cluster. This is because Kubernetes
+alone doesn't provide any facility to implement an actual Load Balancer, so it's
+up to you as the cluster admin to set up the last mile (or your cloud provider).</p>
+<p>For the scope of the course we can stop here, state will remain forever <code>&lt;pending&gt;</code>
+but it's not important at this stage, we'll get back to this later, when we'll
+introduce the <strong>Ingress</strong> object.</p></div>
             </div>
         </div>
 
