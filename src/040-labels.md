@@ -1,8 +1,8 @@
 # Labels
 
 **Labels** are simple key/value pairs attached to any Kubernetes object and used
-at runtime to query and filter such objects. Labels are heavily used by Kubernetes i
-tself as we’ll see in a moment.
+at runtime to query and filter such objects. Labels are heavily used by Kubernetes
+itself as we’ll see in a moment.
 
 ## Exercise n.1: list labels and use them in queries
 
@@ -10,8 +10,8 @@ tself as we’ll see in a moment.
 
 Start two pods with some labels attached (see their definition files for details):
 ```sh
-kubectl apply -f foo-pod.yaml
-kubectl apply -f bar-pod.yaml
+kubectl apply -f foo-labelled-pod.yaml
+kubectl apply -f bar-labelled-pod.yaml
 ```
 
 You can see the attached labels for each pod by running:
