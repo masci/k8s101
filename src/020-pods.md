@@ -57,7 +57,7 @@ Let's create the same pod again but this time we expose its TCP port
 number 80:
 
 ```sh
-kubectl run nginx --generator=run-pod/v1 --image=nginx --port 80
+kubectl run nginx-pod --generator=run-pod/v1 --image=nginx --port 80
 ```
 
 The port is only exposed within the **Cluster** but there's a way to easily
@@ -77,5 +77,5 @@ browser at http://localhost:8080 and see the pod serving requests.
 Last but not least, we can also get logs for our pod by running:
 
 ```sh
-kubectl logs nginx
+kubectl logs nginx-pod
 ```
