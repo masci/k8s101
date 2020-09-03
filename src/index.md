@@ -2,6 +2,8 @@
 
 Welcome to this introductory course to Kubernetes!
 
+![Photo by Joseph Barrientos on Unsplash](img/joseph-barrientos-eUMEWE-7Ewg-unsplash.jpg)
+
 ## Audience
 
 If you never operated a cluster, not even as a user, this course is for you. If you had previous
