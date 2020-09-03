@@ -2,7 +2,12 @@
 
 Welcome to this introductory course to Kubernetes!
 
-![Photo by Joseph Barrientos on Unsplash](img/joseph-barrientos-eUMEWE-7Ewg-unsplash.jpg)
+<figure>
+    <img alt="Photo by Joseph Barrientos on Unsplash" src="img/joseph-barrientos-eUMEWE-7Ewg-unsplash.jpg" width="100%"> 
+    <figcaption>
+        <sub>Photo by Joseph Barrientos on Unsplash</sub>
+    </figcaption>
+</figure>
 
 ## Audience
 
