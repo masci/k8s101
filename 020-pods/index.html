@@ -187,7 +187,7 @@ pod &quot;nginx-pod&quot; deleted
 <h2 id="exercise-n2-interact-with-a-pod">Exercise n.2: interact with a Pod</h2>
 <p>Let's create the same pod again but this time we expose its TCP port
 number 80:</p>
-<pre><code class="sh">kubectl run nginx --generator=run-pod/v1 --image=nginx --port 80
+<pre><code class="sh">kubectl run nginx-pod --generator=run-pod/v1 --image=nginx --port 80
 </code></pre>
 
 <p>The port is only exposed within the <strong>Cluster</strong> but there's a way to easily
@@ -202,7 +202,7 @@ Forwarding from [::1]:8080 -&gt; 80
 <p>The tunnel will stay open until you hit CTRL+C, in the meantime you can open the
 browser at http://localhost:8080 and see the pod serving requests.</p>
 <p>Last but not least, we can also get logs for our pod by running:</p>
-<pre><code class="sh">kubectl logs nginx
+<pre><code class="sh">kubectl logs nginx-pod
 </code></pre></div>
             </div>
         </div>
