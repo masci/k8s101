@@ -26,7 +26,7 @@ mkdocs==1.1.2
     # via -r requirements.in
 nltk==3.5
     # via lunr
-pyyaml==5.3.1
+pyyaml==5.4
     # via mkdocs
 regex==2020.7.14
     # via nltk
