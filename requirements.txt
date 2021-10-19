@@ -24,11 +24,11 @@ markupsafe==1.1.1
     # via jinja2
 mkdocs==1.1.2
     # via -r requirements.in
-nltk==3.5
+nltk==3.6.5
     # via lunr
 pyyaml==5.4
     # via mkdocs
-regex==2020.7.14
+regex==2021.10.8
     # via nltk
 six==1.15.0
     # via
