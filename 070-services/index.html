@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -145,16 +142,14 @@ a service.</p>
 <h2 id="exercise-n1-expose-a-deployment">Exercise n.1: expose a deployment</h2>
 <p>Assuming the <code>nginx-prod</code> deployment from the previous unit is still running,
 we create a new service by exposing it:</p>
-<pre><code class="sh">$ kubectl expose deployment nginx-prod
+<pre><code class="language-sh">$ kubectl expose deployment nginx-prod
 service/nginx-prod exposed
 </code></pre>
-
 <p>As anticipated, under the hood Kubernetes created the corresponding service object:</p>
-<pre><code class="sh">$ kubectl get services
+<pre><code class="language-sh">$ kubectl get services
 NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
 nginx-prod   ClusterIP   10.104.193.191   &lt;none&gt;        80/TCP    5s
 </code></pre>
-
 <p>Note the newly created service has <code>ClusterIP</code> as its <code>TYPE</code> and <code>&lt;none&gt;</code> as the
 <code>EXTERNAL-IP</code> value, meaning the corresponding deployment is only exposed internally
 within the cluster and won't be reachable from the Internet. A service can be created
@@ -163,16 +158,14 @@ it doesn't provide any routing facility to let the service be accessed from the 
 reason why you see the external IP is <code>&lt;none&gt;</code>.</p>
 <p>Let's delete this service and try exposing the deployment with a different service type,
 <code>LoadBalancer</code>:</p>
-<pre><code class="sh">$ kubectl delete service nginx-prod
+<pre><code class="language-sh">$ kubectl delete service nginx-prod
 service &quot;nginx-prod&quot; deleted
 $ kubectl expose deployment nginx-prod --type=LoadBalancer
 service/nginx-prod exposed
 </code></pre>
-
 <p>This time, something seems to happen as you can see from:</p>
-<pre><code class="sh">kubectl get services
+<pre><code class="language-sh">kubectl get services
 </code></pre>
-
 <p>EXTERNAL-IP is now <code>&lt;pending&gt;</code> and if your cluster is configured to do so,
 eventually you'll find a real public IP address listed there and you'll be able
 to access the service from a host outside the cluster. This is because Kubernetes
@@ -188,12 +181,14 @@ introduce the <strong>Ingress</strong> object.</p></div>
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

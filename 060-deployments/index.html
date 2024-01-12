@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -151,13 +148,12 @@ kill as many as needed to match our request.</p>
 <p>Change directory into the folder <code>definitions</code> before running these commands.</p>
 </blockquote>
 <p>Create a <strong>Deployment</strong> called <code>nginx-prod</code>:</p>
-<pre><code class="sh">$ kubectl apply -f nginx-prod.yaml
+<pre><code class="language-sh">$ kubectl apply -f nginx-prod.yaml
 deployment.apps/nginx-prod created
 </code></pre>
-
 <p>Now let's ask <code>kubectl</code> to list all the objects present in the cluster to see
 what happened:</p>
-<pre><code class="sh">$ kubectl get all
+<pre><code class="language-sh">$ kubectl get all
 NAME                             READY   STATUS    RESTARTS   AGE
 pod/nginx-prod-d6fd669f4-8tng2   1/1     Running   0          102s
 pod/nginx-prod-d6fd669f4-9x57t   1/1     Running   0          102s
@@ -169,7 +165,6 @@ deployment.apps/nginx-prod   3/3     3            3           102s
 NAME                                   DESIRED   CURRENT   READY   AGE
 replicaset.apps/nginx-prod-d6fd669f4   3         3         3       102s
 </code></pre>
-
 <p>As you can see there are now 3 pods, 1 deployment and 1 object we haven't seen
 yet, a <strong>Replicaset</strong>. A replicaset has the only responsibility to keep a certain
 number of pods running at any time; in this case, since our deployment specs
@@ -177,25 +172,22 @@ defined 3 replicas for our pod, while creating the deployment Kubernetes
 also attached a replicaset to it.</p>
 <p>If you run a <code>kubectl describe</code> on the replicaset, you'll notice that it is under the
 control of our deployment:</p>
-<pre><code class="sh">$ kubectl describe replicaset &lt;the name of the replicaset&gt;
+<pre><code class="language-sh">$ kubectl describe replicaset &lt;the name of the replicaset&gt;
 Name:           nginx-prod-d6fd669f4
 Namespace:      default
 &lt;snip&gt;
 Controlled By:  Deployment/nginx-prod
 &lt;snip&gt;
 </code></pre>
-
 <p>Now let's see the replicaset in action: we're going to kill one pod and see if
 another one starts to take its place.</p>
-<pre><code class="sh">$ kubectl delete pod &lt;the name of the pod&gt;
+<pre><code class="language-sh">$ kubectl delete pod &lt;the name of the pod&gt;
 pod &quot;the name of the pod&quot; deleted
 </code></pre>
-
 <p>Respawning a new pod is almost instantaneous, so by the time you run this
 command again:</p>
-<pre><code class="sh">kubectl get pods
+<pre><code class="language-sh">kubectl get pods
 </code></pre>
-
 <p>you'll see that a new pod with a different name has started, bringing back
 the pod count to 3.</p></div>
             </div>
@@ -205,12 +197,14 @@ the pod count to 3.</p></div>
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

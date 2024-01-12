@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -176,7 +173,7 @@ find them.</p>
 <h2 id="exercise-n1-install-a-chart">Exercise n.1: install a Chart</h2>
 <p>Let's search for a chart to install a Mysql database server. We want to list the available
 charts along with the repositories we can use to fetch them:</p>
-<pre><code class="sh">$ helm search hub mysql
+<pre><code class="language-sh">$ helm search hub mysql
 URL                                                 CHART VERSION   APP VERSION DESCRIPTION
 https://hub.helm.sh/charts/appscode/stash-mysql     8.0.14          8.0.14      stash-mysql - MySQL database backup and restore...
 https://hub.helm.sh/charts/banzaicloud-stable/tidb  0.0.2                       A TiDB Helm chart for Kubernetes
@@ -187,7 +184,6 @@ https://hub.helm.sh/charts/bitnami/phpmyadmin       6.3.2           5.0.2       
 https://hub.helm.sh/charts/bitnami/mysql            6.14.7          8.0.21      Chart to create a Highly available MySQL cluster
 &lt;snip&gt;
 </code></pre>
-
 <p>As you can see, every Chart has a <code>CHART VERSION</code> and an <code>APP VERSION</code>: the first
 one refers to the version of the Chart itself while the latter refers to
 the application that will be installed. This versioning schema allows to distribute
@@ -197,10 +193,9 @@ familiar and browse the chart's docs to get more details.</p>
 <p>The first column contains the URL of the docs for the chart: for example, if we open
 <code>https://hub.helm.sh/charts/bitnami/mariadb</code> we see under the <code>Helm CLI</code> install section
 that the next step would be adding a repository to our local list:</p>
-<pre><code class="sh">$ helm repo add bitnami https://charts.bitnami.com/bitnami
+<pre><code class="language-sh">$ helm repo add bitnami https://charts.bitnami.com/bitnami
 &quot;bitnami&quot; has been added to your repositories
 </code></pre>
-
 <p>Before proceeding with the installation we need to introduce some Helm terminology
 to avoid confusion. When we install a <strong>Chart</strong> we create a <strong>Release</strong> of that
 Chart, and every release has a <strong>Release Name</strong> that mitght or might not be
@@ -210,7 +205,7 @@ that can be passed by the user to customize the installation.</p>
 <p>Let's install MariaDB <code>10.3</code>, we'll call this <strong>Release</strong> <code>rainbow-dash</code> and we
 want to pass some <strong>Values</strong>, namely a new database, user and password we want
 to create:</p>
-<pre><code class="sh">$ helm install rainbow-dash --set db.name=myapp,db.user=dbuser,db.password=s3cr3t bitnami/mariadb
+<pre><code class="language-sh">$ helm install rainbow-dash --set db.name=myapp,db.user=dbuser,db.password=s3cr3t bitnami/mariadb
 NAME: rainbow-dash
 LAST DEPLOYED: Wed Aug  5 17:24:50 2020
 NAMESPACE: default
@@ -221,15 +216,13 @@ NOTES:
 Please be patient while the chart is being deployed
 &lt;snip&gt;
 </code></pre>
-
 <p>Helm adds labels to the objects it manages so we can list which pods are running after installing
 the chart with:</p>
-<pre><code class="sh">$ kubectl get pods -l release=rainbow-dash
+<pre><code class="language-sh">$ kubectl get pods -l release=rainbow-dash
 NAME                            READY   STATUS    RESTARTS   AGE
 rainbow-dash-mariadb-master-0   1/1     Running   0          119s
 rainbow-dash-mariadb-slave-0    1/1     Running   0          119s
 </code></pre>
-
 <blockquote>
 <p>To have an idea of which <strong>Values</strong> a Chart accepts, refer to its documentation in the
 Helm Hub, for MariaDB: https://hub.helm.sh/charts/bitnami/mariadb</p>
@@ -238,36 +231,32 @@ Helm Hub, for MariaDB: https://hub.helm.sh/charts/bitnami/mariadb</p>
 <p>Releases can be updated at any time, for example if you need to pass different
 <strong>Values</strong> or if you want to deploy a more recent version of an application. You
 can look at all the releases currently installed in your cluster by running:</p>
-<pre><code class="sh">$ helm ls
+<pre><code class="language-sh">$ helm ls
 NAME            NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
 rainbow-dash    default     1           2020-08-05 17:24:50.778728 +0200 CEST   deployed    mariadb-7.7.2   10.3.23
 </code></pre>
-
 <p>Every <strong>Release</strong> has a <strong>Revision</strong>, which is fundamentally a counter that's
 incremented every time a <strong>Release</strong> is updated. Let's try to change the password
 for the default database user:</p>
-<pre><code class="sh">$ helm upgrade rainbow-dash --reuse-values --set db.password=r0tat3d bitnami/mariadb
+<pre><code class="language-sh">$ helm upgrade rainbow-dash --reuse-values --set db.password=r0tat3d bitnami/mariadb
 Release &quot;rainbow-dash&quot; has been upgraded. Happy Helming!
 NAME: rainbow-dash
 &lt;snip&gt;
 </code></pre>
-
 <p>If you run again <code>helm ls</code>, you'll see how the <strong>Revision</strong> was bumped:</p>
-<pre><code class="sh">$ helm ls
+<pre><code class="language-sh">$ helm ls
 NAME            NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
 rainbow-dash    default     2           2020-08-05 17:31:01.911759 +0200 CEST   deployed    mariadb-7.7.2   10.3.23
 </code></pre>
-
 <p>For every <strong>Release</strong> deployed on a cluster, you can list the <strong>Values</strong> currently
 in use with the following command:</p>
-<pre><code class="sh">$ helm get values rainbow-dash
+<pre><code class="language-sh">$ helm get values rainbow-dash
 USER-SUPPLIED VALUES:
 db:
   name: myapp
   password: r0tat3d
   user: dbuser
 </code></pre>
-
 <p>Note how <code>--reuse-values</code> in the <code>helm upgrade</code> command from above tells Helm to
 merge all the <strong>Values</strong> currently in use with the ones overridden with <code>--set</code>;
 in this case, the resulting <strong>Values</strong> are the ones from <strong>Revision</strong> n.1 with the
@@ -275,12 +264,11 @@ exception of <code>db.password</code> that was explicitly set.</p>
 <h2 id="exercise-n3-rollback-a-chart">Exercise n.3: rollback a Chart</h2>
 <p>If an application installed with Helm is misbehaving, you can roll it back to a
 previous <strong>Revision</strong> with the command:</p>
-<pre><code class="sh">$ helm rollback rainbow-dash
+<pre><code class="language-sh">$ helm rollback rainbow-dash
 Rollback was a success! Happy Helming!
 </code></pre>
-
 <p>To see the history of a Helm release, you can do (note the rollback was registered):</p>
-<pre><code class="sh">$ helm history rainbow-dash
+<pre><code class="language-sh">$ helm history rainbow-dash
 REVISION    UPDATED                     STATUS      CHART           APP VERSION DESCRIPTION
 1           Wed Aug  5 17:24:50 2020    superseded  mariadb-7.7.2   10.3.23     Install complete
 2           Wed Aug  5 17:31:01 2020    superseded  mariadb-7.7.2   10.3.23     Upgrade complete
@@ -293,12 +281,14 @@ REVISION    UPDATED                     STATUS      CHART           APP VERSION 
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

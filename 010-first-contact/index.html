@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -161,13 +158,13 @@ for what it is, a tool to start/stop Kubernetes clusters.</p>
 on any Kubernetes cluster, whatever it's local or a production system. One caveat about <code>kubectl</code>,
 you need to double check the version you have in your system is compatible with the version of
 Kubernetes that runs in the cluster: client and server can be at most 1 minor version distant
-from each other. In our case, the versions are pinned so as long as you've followed the <a href="..">setup
+from each other. In our case, the versions are pinned so as long as you've followed the <a href="../">setup
 instructions</a> you should be good.</p>
 <p>In this unit we'll start a local Cluster and we'll explore its components with <code>kubectl</code>.</p>
 <h2 id="exercise-n1-start-the-cluster">Exercise n.1: start the Cluster</h2>
 <p>If <code>kind</code> is correctly installed, all you have to do is running this command from the root of
 the repo:</p>
-<pre><code class="sh">$ kind create cluster --name k8s101 --image kindest/node:v1.18.2 --config kind-config.yaml
+<pre><code class="language-sh">$ kind create cluster --name k8s101 --image kindest/node:v1.18.2 --config kind-config.yaml
 Creating cluster &quot;kind&quot; ...
  ✓ Ensuring node image (kindest/node:v1.18.2) 🖼
  ✓ Preparing nodes 📦
@@ -182,36 +179,30 @@ kubectl cluster-info --context kind-kind
 
 Have a nice day! 👋
 </code></pre>
-
 <p>Notice we use a specific image (and not latest) so that we know it'll work with the pinned
 <code>kubectl</code> version. If you see no errors the default Cluster called <code>kind</code> should be ready
 to use, and you can confirm it by running:</p>
-<pre><code class="sh">$ kind get clusters
+<pre><code class="language-sh">$ kind get clusters
 kind
 </code></pre>
-
 <h2 id="exercise-n2-explore-the-cluster">Exercise n.2: explore the Cluster</h2>
 <p>To get informations about the Cluster, just run</p>
-<pre><code class="sh">kubectl cluster-info
+<pre><code class="language-sh">kubectl cluster-info
 </code></pre>
-
 <p>To prove that everything is a RESTful resource in Kubernetes, you can increase
 <code>kubectl</code>'s log verbosity and see how it performs HTTP calls under the hood:</p>
-<pre><code class="sh">kubectl cluster-info -v6
+<pre><code class="language-sh">kubectl cluster-info -v6
 </code></pre>
-
 <p>We can query the status of few key components of the Cluster:</p>
-<pre><code class="sh">kubectl get componentstatuses
+<pre><code class="language-sh">kubectl get componentstatuses
 </code></pre>
-
 <p>And we can also get the list of all the nodes composing the Cluster:</p>
-<pre><code class="sh">kubectl get nodes
+<pre><code class="language-sh">kubectl get nodes
 </code></pre>
-
 <p>The more detailed, more structured version of <code>kubectl get</code> is the command
 <code>describe</code>, that gives us a comprehensive view of the Objects we query, in this
 case the nodes of the Cluster:</p>
-<pre><code class="sh">kubectl describe nodes
+<pre><code class="language-sh">kubectl describe nodes
 </code></pre></div>
             </div>
         </div>
@@ -220,12 +211,14 @@ case the nodes of the Cluster:</p>
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

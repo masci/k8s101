@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -161,21 +158,19 @@ for our local tiny cluster.</p>
 <h2 id="exercise-n1-deploy-an-ingress-controller">Exercise n.1: deploy an ingress controller</h2>
 <p>There is a specific manifest we can use to install Nginx as an Ingress Controller
 in a Kind cluster, so the installation step is just:</p>
-<pre><code class="sh">$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
+<pre><code class="language-sh">$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
 namespace/ingress-nginx created
 &lt;snip&gt;
 </code></pre>
-
 <p>Kubernetes is pretty fast to create the objects needed but the ingress will take
 a while to start. To be sure that the cluster is ready, run this command that will
 wait until the Ingress Controller is ready:</p>
-<pre><code class="sh">$ kubectl wait --namespace ingress-nginx \
+<pre><code class="language-sh">$ kubectl wait --namespace ingress-nginx \
   --for=condition=ready pod \
   --selector=app.kubernetes.io/component=controller \
   --timeout=90s
 pod/ingress-nginx-controller-6b69c57f44-8xxpw condition met
 </code></pre>
-
 <p>With the ingress up and running, we can move to the next exercise.</p>
 <h2 id="exercise-n2">Exercise n.2</h2>
 <blockquote>
@@ -187,23 +182,21 @@ requests from outside our cluster to 2 different services.</p>
 in response of an HTTP request. The ingress will process the request and forward
 urls ending with <code>/foo</code> to one service and urls ending with <code>/bar</code> to the other
 one according to our <code>rules</code> specification:</p>
-<pre><code class="sh">$ kubectl apply -f ingress-example.yaml
+<pre><code class="language-sh">$ kubectl apply -f ingress-example.yaml
 pod/foo-app created
 service/foo-service created
 pod/bar-app created
 service/bar-service created
 ingress.extensions/example-ingress created
 </code></pre>
-
 <p>To confirm it's working, run <code>curl</code> on localhost:</p>
-<pre><code class="sh">$ curl http://localhost/foo
+<pre><code class="language-sh">$ curl http://localhost/foo
 foo
 $ curl http://localhost/bar
 bar
 </code></pre>
-
 <p>If no rule is matched, Nginx will respond with its notorious 404 page:</p>
-<pre><code class="sh">$ curl http://localhost/
+<pre><code class="language-sh">$ curl http://localhost/
 &lt;html&gt;
 &lt;head&gt;&lt;title&gt;404 Not Found&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
@@ -219,12 +212,14 @@ bar
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

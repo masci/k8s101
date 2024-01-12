@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -155,12 +152,11 @@ for example <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/encr
 <h2 id="exercise-n1-create-a-secret-with-kubectl">Exercise n.1: create a secret with kubectl</h2>
 <p>Same as config maps, there are several options to create a secret, for brevity
 we'll pass our secret strings to <code>kubectl</code>:</p>
-<pre><code class="sh">$ kubectl create secret generic my-secret --from-literal=username=superuser --from-literal=password=topsecret
+<pre><code class="language-sh">$ kubectl create secret generic my-secret --from-literal=username=superuser --from-literal=password=topsecret
 secret/my-secret created
 </code></pre>
-
 <p>You can see what's in your secret by running:</p>
-<pre><code class="sh">$ kubectl describe secret my-secret
+<pre><code class="language-sh">$ kubectl describe secret my-secret
 Name:         my-secret
 &lt;snuip&gt;
 Data
@@ -168,15 +164,13 @@ Data
 username:  9 bytes
 password:  9 bytes
 </code></pre>
-
 <p>As you can see, differently from a config map we can't see the plain text version of our data
 because <code>kubectl</code> encoded the literals in base64 on the fly.</p>
 <h2 id="exercise-n2-create-a-secret-manually">Exercise n.2: create a secret manually</h2>
 <p>If we want to manually create a secret, we have to handle encoding ourselves:</p>
-<pre><code class="sh">$ echo -n 'admin' | base64
+<pre><code class="language-sh">$ echo -n 'admin' | base64
 YWRtaW4=
 </code></pre>
-
 <p>Then we can use the encoded value (e.g.) in a yaml definition like this:</p>
 <pre><code>apiVersion: v1
 kind: Secret
@@ -186,9 +180,8 @@ type: Opaque
 data:
   username: YWRtaW4=
 </code></pre>
-
 <p>And create the object:</p>
-<pre><code class="sh">$ cat &lt;&lt;EOF | kubectl apply -f -
+<pre><code class="language-sh">$ cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
 metadata:
@@ -206,12 +199,14 @@ secret/mysecret created
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

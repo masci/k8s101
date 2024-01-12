@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -146,32 +143,28 @@ itself as we’ll see in a moment.</p>
 <p>Change directory into the folder <code>definitions</code> before running these commands.</p>
 </blockquote>
 <p>Start two pods with some labels attached (see their definition files for details):</p>
-<pre><code class="sh">kubectl apply -f foo-labelled-pod.yaml
+<pre><code class="language-sh">kubectl apply -f foo-labelled-pod.yaml
 kubectl apply -f bar-labelled-pod.yaml
 </code></pre>
-
 <p>You can see the attached labels for each pod by running:</p>
-<pre><code class="sh">$ kubectl get pods --show-labels
+<pre><code class="language-sh">$ kubectl get pods --show-labels
 NAME   READY   STATUS    RESTARTS   AGE   LABELS
 bar    1/1     Running   0          48s   env=staging
 foo    1/1     Running   0          53s   env=prod
 </code></pre>
-
 <p>Now let's see how to list only pods having a label <code>env</code> with <code>prod</code> as value.
 To use a label in order to filter the output of <code>kubectl get pods</code>, we pass the
 option <code>--selector</code> to <code>kubectl</code>. You can keep the <code>--show-labels</code> flag to double
 check the query is working as expected:</p>
-<pre><code class="sh">$ kubectl get pods --selector=&quot;env=prod&quot; --show-labels
+<pre><code class="language-sh">$ kubectl get pods --selector=&quot;env=prod&quot; --show-labels
 NAME   READY   STATUS    RESTARTS   AGE     LABELS
 foo    1/1     Running   0          2m19s   env=prod
 </code></pre>
-
 <p>In case you want to see any pod with the label <code>env</code>, whatever its value:</p>
-<pre><code class="sh">kubectl get pods --selector=&quot;env&quot; --show-labels
+<pre><code class="language-sh">kubectl get pods --selector=&quot;env&quot; --show-labels
 </code></pre>
-
 <p>Queries can be negated with the <code>!</code> operator:</p>
-<pre><code class="sh">kubectl get pods --selector=&quot;\!env&quot; --show-labels
+<pre><code class="language-sh">kubectl get pods --selector=&quot;\!env&quot; --show-labels
 No resources found in default namespace.
 </code></pre></div>
             </div>
@@ -181,12 +174,14 @@ No resources found in default namespace.
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
